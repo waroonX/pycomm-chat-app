@@ -2,6 +2,7 @@
 logs
 src/firebase.jsx
 package-lock.json
+tax.txt
 
 *.log
 npm-debug.log*

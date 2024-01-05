@@ -4,7 +4,8 @@ import Add from "../img/addAvatar.png";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, storage, db } from "../firebase.jsx";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
+import { arrayUnion, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { v4 as uuid } from "uuid";
 
 const Register = () => {
     const [err, setErr] = useState();
@@ -49,8 +50,25 @@ const Register = () => {
                         });
 
                         //create initial userchat
-                        await setDoc(doc(db, "userChats", res.user.uid), {});
-                        navigate("/login");
+                        const chatTitleId = uuid();
+                        const combinedId = res.user.uid + chatTitleId;
+                        await setDoc(doc(db, "userTitle", combinedId), {
+                            uid: res.user.uid,
+                            chatTitleId,
+                            chatTitleName: "Untitled",
+                            date: serverTimestamp(),
+                        });
+                        await setDoc(doc(db, "userChats", combinedId), {
+                            messages: [
+                                {
+                                    id: uuid(),
+                                    text: 'print("Hello World!")',
+                                    sentByUser: true,
+                                    date: serverTimestamp(),
+                                },
+                            ],
+                        });
+                        navigate("/");
                     } catch (err) {
                         console.log(err);
                     }
@@ -86,10 +104,12 @@ const Register = () => {
                         <img src={Add} alt="" />
                         <span>{fileName}</span>
                     </label>
-                    <button disabled={false}>Sign up</button>
+                    <button>Sign up</button>
                     {err && <span className="formError">{err}</span>}
                 </form>
-                <p>Do you have an account? Login</p>
+                <p>
+                    Do you have an account? <Link to="/login">Login</Link>
+                </p>
             </div>
         </div>
     );

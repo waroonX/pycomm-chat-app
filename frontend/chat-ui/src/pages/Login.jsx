@@ -1,10 +1,26 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
+import { auth } from "../firebase";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
-    const [err, setErr] = useState(false);
+    const [err, setErr] = useState();
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setErr();
+
+        const email = e.target[0].value;
+        const password = e.target[1].value;
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            navigate("/");
+        } catch (err) {
+            const errorMessage = err.message;
+            setErr(errorMessage);
+        }
     };
     return (
         <div className="formContainer">
@@ -14,10 +30,12 @@ const Login = () => {
                 <form onSubmit={handleSubmit}>
                     <input required type="email" placeholder="email" />
                     <input required type="password" placeholder="password" />
-                    <button disabled={false}>Login</button>
-                    {err && <span>Something went wrong</span>}
+                    <button>Login</button>
+                    {err && <span className="formError">{err}</span>}
                 </form>
-                <p>Don't have an account? Sign Up</p>
+                <p>
+                    Don't have an account? <Link to="/register">Sign Up</Link>
+                </p>
             </div>
         </div>
     );
