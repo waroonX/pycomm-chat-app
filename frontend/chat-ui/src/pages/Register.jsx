@@ -21,12 +21,16 @@ const Register = () => {
         const password = e.target[2].value;
         const file = e.target[3].files[0];
 
+        console.log(fullName);
         try {
             const res = await createUserWithEmailAndPassword(
                 auth,
                 email,
                 password
             );
+
+            console.log(email);
+            console.log(password);
 
             //Create a unique image name
             const date = new Date().getTime();
@@ -51,23 +55,63 @@ const Register = () => {
 
                         //create initial userchat
                         const chatTitleId = uuid();
-                        const combinedId = res.user.uid + chatTitleId;
-                        await setDoc(doc(db, "userTitle", combinedId), {
-                            uid: res.user.uid,
-                            chatTitleId,
-                            chatTitleName: "Untitled",
-                            date: serverTimestamp(),
-                        });
-                        await setDoc(doc(db, "userChats", combinedId), {
-                            messages: [
-                                {
-                                    id: uuid(),
-                                    text: 'print("Hello World!")',
-                                    sentByUser: true,
-                                    date: serverTimestamp(),
-                                },
-                            ],
-                        });
+                        const timestamp = serverTimestamp();
+                        const uid = res.user.uid;
+                        const message = 'print("Hello World!")';
+                        const chatTitleName = "Untitled";
+                        await setDoc(
+                            doc(
+                                db,
+                                "userInfo",
+                                uid,
+                                "userChats",
+                                chatTitleName
+                            ),
+                            {
+                                uid,
+                                chatTitleId,
+                                chatTitleName,
+                                lastMessage: message,
+                                executionMessage: message,
+                                date: timestamp,
+                            }
+                        );
+                        const messageId = uuid();
+                        await setDoc(
+                            doc(
+                                db,
+                                "userInfo",
+                                uid,
+                                "userChats",
+                                chatTitleName,
+                                "chatMessages",
+                                messageId
+                            ),
+                            {
+                                messageId,
+                                text: message,
+                                sentByUser: true,
+                                date: timestamp,
+                            }
+                        );
+                        // await setDoc(doc(db, "userTitle", combinedId), {
+                        //     uid: res.user.uid,
+                        //     chatTitleId,
+                        //     chatTitleName: "Untitled",
+                        //     date: serverTimestamp(),
+                        // });
+                        // await setDoc(doc(db, "userChats", combinedId), {
+                        //     messages: [
+                        //         {
+                        //             id: uuid(),
+                        //             text: 'print("Hello World!")',
+                        //             sentByUser: true,
+                        //             date: serverTimestamp(),
+                        //         },
+                        //     ],
+                        // });
+
+                        //navigate to homepage
                         navigate("/");
                     } catch (err) {
                         console.log(err);
@@ -75,7 +119,9 @@ const Register = () => {
                 });
             });
         } catch (err) {
+            console.log("coming error");
             const errorMessage = err.message;
+            console.log(err);
             setErr(errorMessage);
         }
     };

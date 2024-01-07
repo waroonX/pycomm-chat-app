@@ -1,78 +1,54 @@
-import React from "react";
+import {
+    collectionGroup,
+    doc,
+    onSnapshot,
+    query,
+    where,
+} from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import { db } from "../firebase";
+import { AuthContext } from "../context/AuthContext";
+import Close from "../img/close.png";
+import Chat from "../img/chatIcon.png";
 
 const Chats = () => {
+    const [chats, setChats] = useState([]);
+    const { currentUser } = useContext(AuthContext);
+
+    useEffect(() => {
+        const getChats = () => {
+            const chatRef = collectionGroup(db, "userChats");
+            const q = query(chatRef, where("uid", "==", currentUser.uid));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                setChats(querySnapshot.docs.map((doc) => doc.data()));
+            });
+            return () => {
+                unsubscribe();
+            };
+        };
+        currentUser.uid && getChats();
+    }, [currentUser.uid]);
+
+    const handleDelete = (chatTitleId) => {};
+
+    // console.log(chats);
     return (
         <div className="chats">
-            <div className="userChat">
-                <img
-                    src="https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt=""
-                />
-                <div className="userChatInfo">
-                    <span>Ashmitha</span>
-                    <p>Hello World!</p>
+            {chats?.map((chat) => (
+                <div className="userChat" key={chat.chatTitleId}>
+                    <img src={Chat} alt="" />
+                    <div className="userChatInfo">
+                        <span>{chat.chatTitleName}</span>
+                        <p>{chat.lastMessage}</p>
+                    </div>
+                    <div
+                        className="userChatIcons"
+                        onClick={() => handleDelete(chat.chatTitleId)}
+                    >
+                        <img src={Close} alt="" />
+                    </div>
                 </div>
-            </div>
-            <div className="userChat">
-                <img
-                    src="https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt=""
-                />
-                <div className="userChatInfo">
-                    <span>Ashmitha</span>
-                    <p>Hello World!</p>
-                </div>
-            </div>
-            <div className="userChat">
-                <img
-                    src="https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt=""
-                />
-                <div className="userChatInfo">
-                    <span>Ashmitha</span>
-                    <p>Hello World!</p>
-                </div>
-            </div>
-            <div className="userChat">
-                <img
-                    src="https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt=""
-                />
-                <div className="userChatInfo">
-                    <span>Ashmitha</span>
-                    <p>Hello World!</p>
-                </div>
-            </div>
-            <div className="userChat">
-                <img
-                    src="https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt=""
-                />
-                <div className="userChatInfo">
-                    <span>Ashmitha</span>
-                    <p>Hello World!</p>
-                </div>
-            </div>
-            <div className="userChat">
-                <img
-                    src="https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt=""
-                />
-                <div className="userChatInfo">
-                    <span>Ashmitha</span>
-                    <p>Hello World!</p>
-                </div>
-            </div>
-            <div className="userChat">
-                <img
-                    src="https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt=""
-                />
-                <div className="userChatInfo">
-                    <span>Ashmitha</span>
-                    <p>Hello World!</p>
-                </div>
-            </div>
+            ))}
         </div>
     );
 };
