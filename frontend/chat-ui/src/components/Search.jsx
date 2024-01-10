@@ -4,10 +4,20 @@ import { v4 as uuid } from "uuid";
 import { AuthContext } from "../context/AuthContext";
 import { doc, serverTimestamp, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "../firebase";
+import { createChatAndChatMsg } from "../utils/chatUtils";
 
 const Search = () => {
     const [search, setSearch] = useState("");
     const { currentUser } = useContext(AuthContext);
+
+    const handleClick2 = async () => {
+        if (search.length > 3) {
+            const uid = currentUser.uid;
+            flag = createChatAndChatMsg(uid);
+            console.log(flag);
+        }
+        setSearch("");
+    };
 
     const handleClick = async () => {
         if (search.length > 3) {
@@ -20,7 +30,9 @@ const Search = () => {
                 chatTitleId,
                 chatTitleName: search,
                 lastMessage: message,
+                lastMessageByUser: true,
                 executionMessage: message,
+                isActive: true,
                 date: timestamp,
             });
             const messageId = uuid();
@@ -38,27 +50,10 @@ const Search = () => {
                     messageId,
                     text: message,
                     sentByUser: true,
+                    isActive: true,
                     date: timestamp,
                 }
             );
-            // await setDoc(doc(db, "userTitle", combinedId), {
-            //     uid: currentUser.uid,
-            //     chatTitleId,
-            //     chatTitleName: search,
-            //     date: timestamp,
-            // });
-            // await setDoc(doc(db, "userChats", combinedId), {
-            //     chatTitle: search,
-            //     lastMessage: 'print("Hello World!")',
-            //     messages: [
-            //         {
-            //             id: uuid(),
-            //             text: 'print("Hello World!")',
-            //             sentByUser: true,
-            //             date: Timestamp.now(),
-            //         },
-            //     ],
-            // });
         }
         setSearch("");
     };
