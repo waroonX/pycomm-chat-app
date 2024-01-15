@@ -7,7 +7,7 @@ const DEFAULT_CHAT_MSG = 'print("Hello World!")';
 
 export const createChat = async (
     uid,
-    chatTitleId = uid(),
+    chatTitleId = uuid(),
     chatTitleName = DEFAULT_CHAT_TITLE,
     lastMessage = DEFAULT_CHAT_MSG,
     lastMessageByUser = true,
@@ -33,7 +33,7 @@ export const createChat = async (
 
 export const createChatMessage = async (
     uid,
-    chatTitleId = uid(),
+    chatTitleId = uuid(),
     message = DEFAULT_CHAT_MSG,
     sentByUser = true
 ) => {
@@ -66,13 +66,13 @@ export const createChatMessage = async (
 
 export const createChatAndChatMsg = async (
     uid,
-    chatTitleId = uid(),
+    chatTitleId = uuid(),
     chatTitleName = DEFAULT_CHAT_TITLE,
     message = DEFAULT_CHAT_MSG,
     sentByUser = true,
     executionMessage = DEFAULT_CHAT_MSG
 ) => {
-    flag1 = await createChat(
+    const flag1 = await createChat(
         uid,
         chatTitleId,
         chatTitleName,
@@ -80,6 +80,11 @@ export const createChatAndChatMsg = async (
         sentByUser,
         executionMessage
     );
-    flag2 = await createChatMessage(uid, chatTitleId, message, sentByUser);
+    const flag2 = await createChatMessage(
+        uid,
+        chatTitleId,
+        message,
+        sentByUser
+    );
     return flag1 && flag2;
 };

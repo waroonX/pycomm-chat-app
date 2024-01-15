@@ -3,6 +3,7 @@ import {
     doc,
     onSnapshot,
     query,
+    updateDoc,
     where,
 } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
@@ -18,7 +19,11 @@ const Chats = () => {
     useEffect(() => {
         const getChats = () => {
             const chatRef = collectionGroup(db, "userChats");
-            const q = query(chatRef, where("uid", "==", currentUser.uid));
+            const q = query(
+                chatRef,
+                where("uid", "==", currentUser.uid),
+                where("isActive", "==", true)
+            );
             const unsubscribe = onSnapshot(q, (querySnapshot) => {
                 setChats(querySnapshot.docs.map((doc) => doc.data()));
             });
@@ -29,7 +34,18 @@ const Chats = () => {
         currentUser.uid && getChats();
     }, [currentUser.uid]);
 
-    const handleDelete = (chatTitleId) => {};
+    const handleDelete = async (chatTitleId) => {
+        try {
+            await updateDoc(
+                doc(db, "userInfo", currentUser.uid, "userChats", chatTitleId),
+                {
+                    isActive: false,
+                }
+            );
+        } catch (err) {
+            console.log(err.message);
+        }
+    };
 
     // console.log(chats);
     return (

@@ -10,53 +10,53 @@ const Search = () => {
     const [search, setSearch] = useState("");
     const { currentUser } = useContext(AuthContext);
 
-    const handleClick2 = async () => {
+    const handleClick = async () => {
         if (search.length > 3) {
             const uid = currentUser.uid;
-            flag = createChatAndChatMsg(uid);
+            const flag = createChatAndChatMsg(uid, undefined, search);
             console.log(flag);
         }
         setSearch("");
     };
 
-    const handleClick = async () => {
-        if (search.length > 3) {
-            const chatTitleId = uuid();
-            const timestamp = serverTimestamp();
-            const uid = currentUser.uid;
-            const message = 'print("Hello World!")';
-            await setDoc(doc(db, "userInfo", uid, "userChats", search), {
-                uid,
-                chatTitleId,
-                chatTitleName: search,
-                lastMessage: message,
-                lastMessageByUser: true,
-                executionMessage: message,
-                isActive: true,
-                date: timestamp,
-            });
-            const messageId = uuid();
-            await setDoc(
-                doc(
-                    db,
-                    "userInfo",
-                    uid,
-                    "userChats",
-                    search,
-                    "chatMessages",
-                    messageId
-                ),
-                {
-                    messageId,
-                    text: message,
-                    sentByUser: true,
-                    isActive: true,
-                    date: timestamp,
-                }
-            );
-        }
-        setSearch("");
-    };
+    // const handleClick = async () => {
+    //     if (search.length > 3) {
+    //         const chatTitleId = uuid();
+    //         const timestamp = serverTimestamp();
+    //         const uid = currentUser.uid;
+    //         const message = 'print("Hello World!")';
+    //         await setDoc(doc(db, "userInfo", uid, "userChats", search), {
+    //             uid,
+    //             chatTitleId,
+    //             chatTitleName: search,
+    //             lastMessage: message,
+    //             lastMessageByUser: true,
+    //             executionMessage: message,
+    //             isActive: true,
+    //             date: timestamp,
+    //         });
+    //         const messageId = uuid();
+    //         await setDoc(
+    //             doc(
+    //                 db,
+    //                 "userInfo",
+    //                 uid,
+    //                 "userChats",
+    //                 search,
+    //                 "chatMessages",
+    //                 messageId
+    //             ),
+    //             {
+    //                 messageId,
+    //                 text: message,
+    //                 sentByUser: true,
+    //                 isActive: true,
+    //                 date: timestamp,
+    //             }
+    //         );
+    //     }
+    //     setSearch("");
+    // };
     return (
         <div className="search">
             <div className="searchForm">
