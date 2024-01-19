@@ -13,7 +13,7 @@ const Search = () => {
     const handleClick = async () => {
         if (search.length > 3) {
             const uid = currentUser.uid;
-            const flag = createChatAndChatMsg(uid, undefined, search);
+            const flag = await createChatAndChatMsg(uid, undefined, search);
             console.log(flag);
         }
         setSearch("");

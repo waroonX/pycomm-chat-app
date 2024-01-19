@@ -11,10 +11,12 @@ import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 import Close from "../img/close.png";
 import Chat from "../img/chatIcon.png";
+import { ChatContext } from "../context/ChatContext";
 
 const Chats = () => {
     const [chats, setChats] = useState([]);
     const { currentUser } = useContext(AuthContext);
+    const { dispatch } = useContext(ChatContext);
 
     useEffect(() => {
         const getChats = () => {
@@ -47,11 +49,28 @@ const Chats = () => {
         }
     };
 
+    const handleSelect = (chatTitleId, chatTitleName) => {
+        dispatch({
+            type: "CHANGE_USER",
+            payload: {
+                chatTitleId,
+                chatTitleName,
+                uid: currentUser.uid,
+            },
+        });
+    };
+
     // console.log(chats);
     return (
         <div className="chats">
             {chats?.map((chat) => (
-                <div className="userChat" key={chat.chatTitleId}>
+                <div
+                    className="userChat"
+                    key={chat.chatTitleId}
+                    onClick={(e) =>
+                        handleSelect(chat.chatTitleId, chat.chatTitleName)
+                    }
+                >
                     <img src={Chat} alt="" />
                     <div className="userChatInfo">
                         <span>{chat.chatTitleName}</span>

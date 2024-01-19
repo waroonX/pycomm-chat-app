@@ -6,6 +6,7 @@ import { auth, storage, db } from "../firebase.jsx";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { arrayUnion, doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { v4 as uuid } from "uuid";
+import { createChatAndChatMsg } from "../utils/chatUtils.jsx";
 
 const Register = () => {
     const [err, setErr] = useState();
@@ -20,8 +21,6 @@ const Register = () => {
         const email = e.target[1].value;
         const password = e.target[2].value;
         const file = e.target[3].files[0];
-
-        console.log(fullName);
         try {
             const res = await createUserWithEmailAndPassword(
                 auth,
@@ -29,8 +28,8 @@ const Register = () => {
                 password
             );
 
-            console.log(email);
-            console.log(password);
+            // console.log(email);
+            // console.log(password);
 
             //Create a unique image name
             const date = new Date().getTime();
@@ -54,46 +53,48 @@ const Register = () => {
                         });
 
                         //create initial userchat
-                        const chatTitleId = uuid();
-                        const timestamp = serverTimestamp();
-                        const uid = res.user.uid;
-                        const message = 'print("Hello World!")';
-                        const chatTitleName = "Untitled";
-                        await setDoc(
-                            doc(
-                                db,
-                                "userInfo",
-                                uid,
-                                "userChats",
-                                chatTitleName
-                            ),
-                            {
-                                uid,
-                                chatTitleId,
-                                chatTitleName,
-                                lastMessage: message,
-                                executionMessage: message,
-                                date: timestamp,
-                            }
-                        );
-                        const messageId = uuid();
-                        await setDoc(
-                            doc(
-                                db,
-                                "userInfo",
-                                uid,
-                                "userChats",
-                                chatTitleName,
-                                "chatMessages",
-                                messageId
-                            ),
-                            {
-                                messageId,
-                                text: message,
-                                sentByUser: true,
-                                date: timestamp,
-                            }
-                        );
+                        const flag = await createChatAndChatMsg(res.user.uid);
+                        console.log(flag);
+                        // const chatTitleId = uuid();
+                        // const timestamp = serverTimestamp();
+                        // const uid = res.user.uid;
+                        // const message = 'print("Hello World!")';
+                        // const chatTitleName = "Untitled";
+                        // await setDoc(
+                        //     doc(
+                        //         db,
+                        //         "userInfo",
+                        //         uid,
+                        //         "userChats",
+                        //         chatTitleName
+                        //     ),
+                        //     {
+                        //         uid,
+                        //         chatTitleId,
+                        //         chatTitleName,
+                        //         lastMessage: message,
+                        //         executionMessage: message,
+                        //         date: timestamp,
+                        //     }
+                        // );
+                        // const messageId = uuid();
+                        // await setDoc(
+                        //     doc(
+                        //         db,
+                        //         "userInfo",
+                        //         uid,
+                        //         "userChats",
+                        //         chatTitleName,
+                        //         "chatMessages",
+                        //         messageId
+                        //     ),
+                        //     {
+                        //         messageId,
+                        //         text: message,
+                        //         sentByUser: true,
+                        //         date: timestamp,
+                        //     }
+                        // );
                         // await setDoc(doc(db, "userTitle", combinedId), {
                         //     uid: res.user.uid,
                         //     chatTitleId,
@@ -119,7 +120,6 @@ const Register = () => {
                 });
             });
         } catch (err) {
-            console.log("coming error");
             const errorMessage = err.message;
             console.log(err);
             setErr(errorMessage);
