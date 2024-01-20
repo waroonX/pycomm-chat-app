@@ -20,7 +20,7 @@ export const createChat = async (
             chatTitleName,
             lastMessage,
             lastMessageByUser,
-            executionMessage,
+            executionMessages: [executionMessage],
             isActive: true,
             date: serverTimestamp(),
         });
@@ -87,4 +87,9 @@ export const createChatAndChatMsg = async (
         sentByUser
     );
     return flag1 && flag2;
+};
+
+export const addNewMessage = async (uid, chatTitleId, message) => {
+    const flag1 = await createChatMessage(uid, chatTitleId, message, true);
+    return flag1;
 };

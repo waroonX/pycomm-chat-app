@@ -37,16 +37,6 @@ const Messages = () => {
             {messages?.map((message) => (
                 <Message msgInfo={message} key={message.messageId} />
             ))}
-            {/* <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message /> */}
         </div>
     );
 };

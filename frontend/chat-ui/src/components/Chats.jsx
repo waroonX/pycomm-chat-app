@@ -60,7 +60,6 @@ const Chats = () => {
         });
     };
 
-    // console.log(chats);
     return (
         <div className="chats">
             {chats?.map((chat) => (
