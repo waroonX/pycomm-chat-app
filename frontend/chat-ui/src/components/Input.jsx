@@ -1,12 +1,14 @@
 import React, { useContext, useState } from "react";
 import { ChatContext } from "../context/ChatContext";
+import { addNewMessage } from "../utils/chatUtils";
 
 const Input = () => {
     const { data } = useContext(ChatContext);
     const [message, setMessage] = useState("");
 
-    const handleSend = () => {
-        console.log(message);
+    const handleSend = async () => {
+        const flag = await addNewMessage(data.uid, data.chatTitleId, message);
+        console.log(flag);
     };
     return (
         <div className="input">

@@ -34,9 +34,11 @@ const Messages = () => {
     }, [data.chatTitleId]);
     return (
         <div className="messages">
-            {messages?.map((message) => (
-                <Message msgInfo={message} key={message.messageId} />
-            ))}
+            {messages
+                ?.sort((m1, m2) => (m1.date > m2.date ? 1 : -1))
+                .map((message) => (
+                    <Message msgInfo={message} key={message.messageId} />
+                ))}
         </div>
     );
 };
