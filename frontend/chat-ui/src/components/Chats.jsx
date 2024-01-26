@@ -60,30 +60,31 @@ const Chats = () => {
         });
     };
 
-    // console.log(chats);
     return (
         <div className="chats">
-            {chats?.map((chat) => (
-                <div
-                    className="userChat"
-                    key={chat.chatTitleId}
-                    onClick={(e) =>
-                        handleSelect(chat.chatTitleId, chat.chatTitleName)
-                    }
-                >
-                    <img src={Chat} alt="" />
-                    <div className="userChatInfo">
-                        <span>{chat.chatTitleName}</span>
-                        <p>{chat.lastMessage}</p>
-                    </div>
+            {chats
+                ?.sort((c1, c2) => (c1.date > c2.date ? -1 : 1))
+                .map((chat) => (
                     <div
-                        className="userChatIcons"
-                        onClick={() => handleDelete(chat.chatTitleId)}
+                        className="userChat"
+                        key={chat.chatTitleId}
+                        onClick={(e) =>
+                            handleSelect(chat.chatTitleId, chat.chatTitleName)
+                        }
                     >
-                        <img src={Close} alt="" />
+                        <img src={Chat} alt="" />
+                        <div className="userChatInfo">
+                            <span>{chat.chatTitleName}</span>
+                            <p>{chat.lastMessage}</p>
+                        </div>
+                        <div
+                            className="userChatIcons"
+                            onClick={() => handleDelete(chat.chatTitleId)}
+                        >
+                            <img src={Close} alt="" />
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
         </div>
     );
 };

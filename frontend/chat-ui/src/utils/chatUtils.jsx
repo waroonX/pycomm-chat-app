@@ -1,4 +1,10 @@
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+    doc,
+    serverTimestamp,
+    setDoc,
+    arrayUnion,
+    updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import { v4 as uuid } from "uuid";
 
@@ -20,7 +26,7 @@ export const createChat = async (
             chatTitleName,
             lastMessage,
             lastMessageByUser,
-            executionMessage,
+            executionMessages: [executionMessage],
             isActive: true,
             date: serverTimestamp(),
         });
@@ -86,5 +92,39 @@ export const createChatAndChatMsg = async (
         message,
         sentByUser
     );
+    return flag1 && flag2;
+};
+
+export const updateChatLastMessage = async (uid, chatTitleId, message) => {
+    try {
+        await updateDoc(doc(db, "userInfo", uid, "userChats", chatTitleId), {
+            lastMessage: message,
+            lastMessageByUser: true,
+            executionMessages: arrayUnion(message),
+            date: serverTimestamp(),
+        });
+        return true;
+    } catch (err) {
+        console.log(err.message);
+        return false;
+    }
+};
+
+export const clearChatExecMessages = async (uid, chatTitleId) => {
+    try {
+        await updateDoc(doc(db, "userInfo", uid, "userChats", chatTitleId), {
+            executionMessages: [],
+            date: serverTimestamp(),
+        });
+        return true;
+    } catch (err) {
+        console.log(err.message);
+        return false;
+    }
+};
+
+export const addNewMessage = async (uid, chatTitleId, message) => {
+    const flag1 = await createChatMessage(uid, chatTitleId, message, true);
+    const flag2 = await updateChatLastMessage(uid, chatTitleId, message);
     return flag1 && flag2;
 };
