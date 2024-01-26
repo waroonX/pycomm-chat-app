@@ -110,6 +110,19 @@ export const updateChatLastMessage = async (uid, chatTitleId, message) => {
     }
 };
 
+export const clearChatExecMessages = async (uid, chatTitleId) => {
+    try {
+        await updateDoc(doc(db, "userInfo", uid, "userChats", chatTitleId), {
+            executionMessages: [],
+            date: serverTimestamp(),
+        });
+        return true;
+    } catch (err) {
+        console.log(err.message);
+        return false;
+    }
+};
+
 export const addNewMessage = async (uid, chatTitleId, message) => {
     const flag1 = await createChatMessage(uid, chatTitleId, message, true);
     const flag2 = await updateChatLastMessage(uid, chatTitleId, message);

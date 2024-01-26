@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 const Message = ({ msgInfo }) => {
     const classType = msgInfo.sentByUser ? "message owner" : "message";
     const timestamp = msgInfo.date?.toDate().toLocaleString();
-    // console.log(msgInfo.date.toDate().toLocaleString());
-    // console.log(new Date(msgInfo.date.nanoseconds).toLocaleString());
+    const ref = useRef();
+    useEffect(() => {
+        ref.current?.scrollIntoView({ behavior: "smooth" });
+    }, [msgInfo]);
     return (
-        <div className={classType}>
+        <div ref={ref} className={classType}>
             <div className="messageInfo">
                 <img
                     src="https://images.pexels.com/photos/792326/pexels-photo-792326.jpeg?auto=compress&cs=tinysrgb&w=800"
