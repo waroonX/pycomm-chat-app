@@ -23,7 +23,7 @@ def compile_user_commands(uid:str, chat_title_id:str):
         command = "\n".join(exec_msgs)
         output = execute_python_command(command)
         output = OUTPUT_FORMAT.format(output)
-        print(output)
+        # print(output)
         send_compiled_output(uid, chat_title_id, output)
         return True
     return False
