@@ -3,8 +3,6 @@ from subprocess import run, PIPE
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
-from io import StringIO
-from contextlib import redirect_stdout
 
 app = Flask(__name__)
 CORS(app)
@@ -53,15 +51,6 @@ def handle_chat():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
-def execute_python_command(command):
-    try:
-        f = StringIO()
-        with redirect_stdout(f):
-            exec(command)
-        return f.getvalue()
-    except Exception as e:
-        return str(e)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
