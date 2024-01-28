@@ -311,6 +311,7 @@ body {
                             padding: 10px 20px;
                             border-radius: 0px 10px 10px 10px;
                             max-width: max-content;
+                            white-space: pre-line;
                         }
                     }
                     &.owner {
@@ -322,6 +323,7 @@ body {
                                 background-color: #8da4f1;
                                 color: white;
                                 border-radius: 10px 0px 10px 10px;
+                                white-space: pre-line;
                                 &:hover {
                                     background-color: #5d5b8d;
                                     color: aliceblue;
